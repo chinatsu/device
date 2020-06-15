@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>io.naisdevice.interface</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/opt/naisdevice/scripts/interface.sh</string>
+        <string>utun69</string>
+        <string>CONFIG_DIR/bootstrapconfig.json</string>
+        <string>CONFIG_DIR/pid</string>
+    </array>
+    <key>StandardOutPath</key>
+    <string>/Library/Logs/naisdevice-sync.out</string>
+    <key>StandardErrorPath</key>
+    <string>/Library/Logs/naisdevice-sync.err</string>
+    <key>WatchPaths</key>
+    <array>
+        <string>CONFIG_DIR/pid</string>
+        <string>CONFIG_DIR/bootstrapconfig.json</string>
+    </array>
+</dict>
+</plist>
