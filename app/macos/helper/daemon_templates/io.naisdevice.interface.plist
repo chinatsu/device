@@ -12,9 +12,9 @@
         <string>CONFIG_DIR/pid</string>
     </array>
     <key>StandardOutPath</key>
-    <string>/Library/Logs/naisdevice-sync.out</string>
+    <string>/Library/Logs/naisdevice-interface.out</string>
     <key>StandardErrorPath</key>
-    <string>/Library/Logs/naisdevice-sync.err</string>
+    <string>/Library/Logs/naisdevice-interface.err</string>
     <key>WatchPaths</key>
     <array>
         <string>CONFIG_DIR/pid</string>
