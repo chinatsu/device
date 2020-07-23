@@ -117,14 +117,16 @@ func setup(t *testing.T) (*database.APIServerDB, chi.Router) {
 		t.Fatalf("Instantiating database: %v", err)
 	}
 
-	sessionInfo := auth.SessionInfo{
-		Key:      "keyyolo123",
-		Expiry:   time.Now().Add(1 * time.Minute).Unix(),
-		DeviceID: 1,
-		Serial:   "serial",
-		Platform: "platform",
-		Username: "username",
-		Groups:   []string{"group1"},
+	sessionInfo := database.SessionInfo{
+		Key:    "keyyolo123",
+		Expiry: time.Now().Add(1 * time.Minute).Unix(),
+		Device: &database.Device{
+			ID:       1,
+			Serial:   "serial",
+			Platform: "platform",
+			Username: "username",
+		},
+		Groups: []string{"group1"},
 	}
 
 	assert.NoError(t, err)
@@ -132,7 +134,7 @@ func setup(t *testing.T) (*database.APIServerDB, chi.Router) {
 	return db, api.New(api.Config{
 		DB: db,
 		Sessions: &auth.Sessions{
-			Active: map[string]auth.SessionInfo{sessionInfo.Key: sessionInfo},
+			Active: map[string]*database.SessionInfo{sessionInfo.Key: &sessionInfo},
 		},
 	})
 }
