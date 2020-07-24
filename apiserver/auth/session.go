@@ -19,7 +19,7 @@ import (
 const SessionDuration = time.Hour * 10
 
 type Sessions struct {
-	db             *database.APIServerDB
+	DB             *database.APIServerDB
 	oauthConfig    *oauth2.Config
 	tokenValidator jwt.Keyfunc
 	devMode        bool
@@ -33,7 +33,7 @@ type Sessions struct {
 
 func New(cfg config.Config, validator jwt.Keyfunc, db *database.APIServerDB) (*Sessions, error) {
 	return &Sessions{
-		db:             db,
+		DB:             db,
 		devMode:        cfg.DevMode,
 		tokenValidator: validator,
 		state:          make(map[string]bool),
@@ -57,14 +57,15 @@ func (s *Sessions) Validator() func(next http.Handler) http.Handler {
 			defer s.activeLock.Unlock()
 			sessionInfo, ok := s.Active[sessionKey]
 			if !ok {
-				si, err := s.db.ReadSessionInfo(r.Context(), sessionKey)
+				si, err := s.DB.ReadSessionInfo(r.Context(), sessionKey)
 				if err != nil {
 					log.Errorf("reading session info from db: %v", err)
 					w.WriteHeader(http.StatusUnauthorized)
 					return
 				}
 
-				s.Active[sessionKey] = si
+				s.Active[sessionKey] = si // cache it
+				sessionInfo = si
 				ok = true
 			}
 
@@ -141,7 +142,7 @@ func (s *Sessions) Login(w http.ResponseWriter, r *http.Request) {
 
 		serial := r.Header.Get("x-naisdevice-serial")
 		platform := r.Header.Get("x-naisdevice-platform")
-		device, err := s.db.ReadDeviceBySerialPlatformUsername(ctx, serial, platform, username)
+		device, err := s.DB.ReadDeviceBySerialPlatformUsername(ctx, serial, platform, username)
 		if err != nil {
 			authFailed(w, "getting device: %v", err)
 			return
@@ -164,7 +165,7 @@ func (s *Sessions) Login(w http.ResponseWriter, r *http.Request) {
 	defer s.activeLock.Unlock()
 	s.Active[sessionInfo.Key] = sessionInfo
 
-	err = s.db.PersistSessionInfo(r.Context(), sessionInfo)
+	err = s.DB.AddSessionInfo(r.Context(), sessionInfo)
 	if err != nil {
 		log.Errorf("Persisting session info %v: %v", sessionInfo, err)
 		// don't abort auth here as this might be OK

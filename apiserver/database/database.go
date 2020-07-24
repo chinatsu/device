@@ -245,14 +245,14 @@ func (d *APIServerDB) ReadDevice(publicKey string) (*Device, error) {
 	ctx := context.Background()
 
 	query := `
-SELECT serial, username, psk, platform, last_updated, kolide_last_seen, healthy, public_key, ip
+SELECT id, serial, username, psk, platform, last_updated, kolide_last_seen, healthy, public_key, ip
   FROM device
  WHERE public_key = $1;`
 
 	row := d.conn.QueryRow(ctx, query, publicKey)
 
 	var device Device
-	err := row.Scan(&device.Serial, &device.Username, &device.PSK, &device.Platform, &device.LastUpdated, &device.KolideLastSeen, &device.Healthy, &device.PublicKey, &device.IP)
+	err := row.Scan(&device.ID, &device.Serial, &device.Username, &device.PSK, &device.Platform, &device.LastUpdated, &device.KolideLastSeen, &device.Healthy, &device.PublicKey, &device.IP)
 
 	if err != nil {
 		return nil, fmt.Errorf("scanning row: %s", err)
@@ -263,14 +263,14 @@ SELECT serial, username, psk, platform, last_updated, kolide_last_seen, healthy,
 
 func (d *APIServerDB) ReadDeviceById(ctx context.Context, deviceID int) (*Device, error) {
 	query := `
-SELECT serial, username, psk, platform, last_updated, kolide_last_seen, healthy, public_key, ip
+SELECT id, serial, username, psk, platform, last_updated, kolide_last_seen, healthy, public_key, ip
   FROM device
  WHERE id = $1;`
 
 	row := d.conn.QueryRow(ctx, query, deviceID)
 
 	var device Device
-	err := row.Scan(&device.Serial, &device.Username, &device.PSK, &device.Platform, &device.LastUpdated, &device.KolideLastSeen, &device.Healthy, &device.PublicKey, &device.IP)
+	err := row.Scan(&device.ID, &device.Serial, &device.Username, &device.PSK, &device.Platform, &device.LastUpdated, &device.KolideLastSeen, &device.Healthy, &device.PublicKey, &device.IP)
 
 	if err != nil {
 		return nil, fmt.Errorf("scanning row: %s", err)
@@ -394,7 +394,7 @@ SELECT id, username, serial, psk, platform, healthy, last_updated, kolide_last_s
 	return &device, nil
 }
 
-func (d *APIServerDB) PersistSessionInfo(ctx context.Context, si *SessionInfo) error {
+func (d *APIServerDB) AddSessionInfo(ctx context.Context, si *SessionInfo) error {
 	query := `
 INSERT INTO session (key, expiry, device_id, groups)
              VALUES ($1, $2, $3, $4);
