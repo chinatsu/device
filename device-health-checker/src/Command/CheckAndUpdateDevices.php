@@ -56,6 +56,7 @@ class CheckAndUpdateDevices extends BaseCommand {
             'kolideLastSeen'  => $device['kolideLastSeen'],
         ], $this->apiServerClient->getDevices());
         $kolideDevices = $this->kolideApiClient->getAllDevices();
+        $this->log($output, 'Fetched devices from Kolide', null, null, null, $kolideDevices);
         $updatedNaisDevices = [];
 
         foreach ($naisDevices as $naisDevice) {
@@ -67,11 +68,6 @@ class CheckAndUpdateDevices extends BaseCommand {
 
             if (null === $kolideDevice) {
                 $this->log($output, 'Could not find matching Kolide device', $serial, $platform, $username);
-
-                // Could not identify a single Kolide device for this Nais device
-                $naisDevice['isHealthy'] = false;
-                $updatedNaisDevices[] = $naisDevice;
-
                 continue;
             }
 
@@ -188,18 +184,20 @@ class CheckAndUpdateDevices extends BaseCommand {
      * @param string $serial
      * @param string $platform
      * @param string $username
+     * @param array  $kolideDevices
      * @return void
      */
-    private function log(OutputInterface $output, string $message, string $serial = null, string $platform = null, string $username = null) : void {
+    private function log(OutputInterface $output, string $message, string $serial = null, string $platform = null, string $username = null, array $kolideDevices = null) : void {
         $output->writeln(json_encode(array_filter([
-            'component' => 'device-health-checker',
-            'system'    => 'nais-device',
-            'message'   => $message,
-            'serial'    => $serial,
-            'platform'  => $platform,
-            'username'  => $username,
-            'level'     => 'info',
-            'timestamp' => time(),
+            'component'     => 'device-health-checker',
+            'system'        => 'nais-device',
+            'message'       => $message,
+            'serial'        => $serial,
+            'platform'      => $platform,
+            'username'      => $username,
+            'level'         => 'info',
+            'timestamp'     => time(),
+            'kolideDevices' => $kolideDevices
         ])));
     }
 }

@@ -48,15 +48,19 @@ class CheckAndUpdateDevicesTest extends TestCase {
                 'naisDevices' => [],
                 'kolideDevices' => [],
                 'expectedMessages' => [
+                    'Fetched devices from Kolide',
                     'No Nais devices to update :(',
                 ],
                 'expectedLogSerials' => [
                     null,
+                    null,
                 ],
                 'expectedLogPlatforms' => [
                     null,
+                    null,
                 ],
                 'expectedLogUsernames' => [
+                    null,
                     null,
                 ],
                 'expectedUpdatePayload' => [],
@@ -73,30 +77,26 @@ class CheckAndUpdateDevicesTest extends TestCase {
                 ],
                 'kolideDevices' => [],
                 'expectedLogMessages' => [
+                    'Fetched devices from Kolide',
                     'Could not find matching Kolide device',
-                    'Sent updated Nais device configuration to API server'
+                    'No Nais devices to update :('
                 ],
                 'expectedLogSerials' => [
+                    null,
                     'serial1',
                     null,
                 ],
                 'expectedLogPlatforms' => [
+                    null,
                     'linux',
                     null,
                 ],
                 'expectedLogUsernames' => [
+                    null,
                     'user1@nav.no',
                     null,
                 ],
-                'expectedUpdatePayload' => [
-                    [
-                        'serial'         => 'serial1',
-                        'platform'       => 'linux',
-                        'username'       => 'user1@nav.no',
-                        'isHealthy'      => false,
-                        'kolideLastSeen' => 1589952551,
-                    ]
-                ],
+                'expectedUpdatePayload' => [],
             ],
             'no failing checks' => [
                 'naisDevices' => [
@@ -134,15 +134,19 @@ class CheckAndUpdateDevicesTest extends TestCase {
                     ],
                 ],
                 'expectedLogMessages' => [
+                    'Fetched devices from Kolide',
                     'Sent updated Nais device configuration to API server'
                 ],
                 'expectedLogSerials' => [
                     null,
+                    null,
                 ],
                 'expectedLogPlatforms' => [
+                    null,
                     null
                 ],
                 'expectedLogUsernames' => [
+                    null,
                     null,
                 ],
                 'expectedUpdatePayload' => [
@@ -287,13 +291,6 @@ class CheckAndUpdateDevicesTest extends TestCase {
                     'kolideLastSeen' => 1589956403,
                 ],
                 [
-                    'serial'         => 'serial2-not-in-kolide',
-                    'platform'       => 'darwin',
-                    'username'       => 'user2@nav.no',
-                    'isHealthy'      => false,
-                    'kolideLastSeen' => 1589952552,
-                ],
-                [
                     'serial'         => 'serial3',
                     'platform'       => 'linux',
                     'username'       => 'user3@nav.no',
@@ -428,6 +425,7 @@ class CheckAndUpdateDevicesTest extends TestCase {
         $this->assertSame(0, $exitCode, 'Expected exit code to be 0');
         $this->assertSame(
             [
+                'Fetched devices from Kolide',
                 'Could not find matching Kolide device',
                 'No failing checks anymore, device is now healthy',
                 'Device is no longer healthy because of the following failing check(s): some failing check',
@@ -438,6 +436,7 @@ class CheckAndUpdateDevicesTest extends TestCase {
         );
         $this->assertSame(
             [
+                null,
                 'serial2-not-in-kolide',
                 'serial3',
                 'serial4',
@@ -448,6 +447,7 @@ class CheckAndUpdateDevicesTest extends TestCase {
         );
         $this->assertSame(
             [
+                null,
                 'darwin',
                 'linux',
                 'linux',
@@ -458,6 +458,7 @@ class CheckAndUpdateDevicesTest extends TestCase {
         );
         $this->assertSame(
             [
+                null,
                 'user2@nav.no',
                 'user3@nav.no',
                 'user4@nav.no',
