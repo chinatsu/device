@@ -11,7 +11,7 @@
 
 # add crontab entry
 ```
-*/2 * * * * /usr/bin/ansible-pull --only-if-changed -U https://github.com/nais/device ansible/site.yml -i /root/ansible-inventory.yaml >> /var/log/naisdevice/ansible.log
+*/5 * * * * [ $(pgrep ansible-pull -c) -eq 0 ] && /usr/bin/ansible-pull --only-if-changed -U https://github.com/nais/device ansible/site.yml -i /root/ansible-inventory.yaml >> /var/log/naisdevice/ansible.log
 ```
 
 # add ansible-inventory.yaml
