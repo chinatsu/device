@@ -116,6 +116,7 @@ func TestGetDeviceConfigSessionNotInCache(t *testing.T) {
 		PublicKey: "pubkey",
 		Username:  "user",
 		Platform:  "darwin",
+		Healthy:   boolp(true),
 	}
 
 	if err := db.AddDevice(ctx, device); err != nil {
@@ -173,7 +174,7 @@ func setup(t *testing.T) (*database.APIServerDB, chi.Router) {
 	return db, api.New(api.Config{
 		DB: db,
 		Sessions: &auth.Sessions{
-			DB: db,
+			DB:     db,
 			Active: map[string]*database.SessionInfo{sessionInfo.Key: &sessionInfo},
 		},
 	})
